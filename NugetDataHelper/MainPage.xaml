@@ -1,0 +1,71 @@
+﻿<Page
+    x:Class="NugetDataHelper.MainPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:NugetDataHelper"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:telerik="using:Telerik.UI.Xaml.Controls.Chart"
+    xmlns:controls="using:Microsoft.Toolkit.Uwp.UI.Controls"
+    mc:Ignorable="d">
+
+    <Page.Resources>
+        <DataTemplate x:Key="ChartTemplate" x:DataType="local:PackageData">
+            <controls:Expander IsExpanded="True" Header="{x:Bind Name}">
+                <Grid Height="500" Padding="20">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"></ColumnDefinition>
+                        <ColumnDefinition Width="Auto"></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+
+                    <telerik:RadCartesianChart PaletteName="DefaultLight" x:Name="Chart">
+                        <telerik:RadCartesianChart.HorizontalAxis>
+                            <telerik:CategoricalAxis/>
+                        </telerik:RadCartesianChart.HorizontalAxis>
+                        <telerik:RadCartesianChart.VerticalAxis>
+                            <telerik:LinearAxis/>
+                        </telerik:RadCartesianChart.VerticalAxis>
+                        <telerik:RadCartesianChart.Grid>
+                            <telerik:CartesianChartGrid MajorLinesVisibility="Y" StripLinesVisibility="Y"/>
+                        </telerik:RadCartesianChart.Grid>
+                        <telerik:BarSeries ItemsSource="{x:Bind Downloads}"  x:Name="BarSeries" PaletteMode="DataPoint">
+                            <telerik:BarSeries.ValueBinding>
+                                <telerik:PropertyNameDataPointBinding PropertyName="Downloads"/>
+                            </telerik:BarSeries.ValueBinding>
+                            <telerik:BarSeries.CategoryBinding>
+                                <telerik:PropertyNameDataPointBinding PropertyName="Version"/>
+                            </telerik:BarSeries.CategoryBinding>
+                        </telerik:BarSeries>
+                    </telerik:RadCartesianChart>
+
+                    <Grid Grid.Column="1" Width="300" Padding="40, 20">
+                        <StackPanel>
+                            <controls:HeaderedTextBlock Header="latest version downloads (6 weeks)" Text="{x:Bind PercentageLatestVersion}"></controls:HeaderedTextBlock>
+                            <controls:HeaderedTextBlock Header="total downloads (all time)" Text="{x:Bind Details.TotalDownloads}"></controls:HeaderedTextBlock>
+                        </StackPanel>
+                    </Grid>
+                </Grid>
+            </controls:Expander>
+        </DataTemplate>
+    </Page.Resources>
+
+    <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="*"></RowDefinition>
+        </Grid.RowDefinitions>
+
+        <StackPanel>
+            <TextBlock Margin="10, 30, 10, 20" Text="Downloads for select packages in the last 6 weeks"></TextBlock>
+            <TextBox Margin="10" x:Name="PackageTextBox" Height="200" TextWrapping="Wrap" AcceptsReturn="True" ></TextBox>
+            <Button Click="Button_Click" Margin="10">Get Data</Button>
+        </StackPanel>
+
+        <ScrollViewer Grid.Row="1">
+            <ItemsControl x:Name="ItemsContainer" ItemTemplate="{StaticResource ChartTemplate}"></ItemsControl>
+        </ScrollViewer>
+        
+
+
+    </Grid>
+</Page>
