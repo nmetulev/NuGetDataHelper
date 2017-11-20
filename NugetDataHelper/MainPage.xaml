@@ -61,12 +61,12 @@
 
             <StackPanel Spacing="20" Orientation="Horizontal" Margin="20">
                 <Button Click="Button_Click" >Get Data</Button>
-                <Button Click="Print" >Print</Button>
+                <Button Click="Print" >Copy to image</Button>
             </StackPanel>
         </StackPanel>
 
         <ScrollViewer Grid.Row="1">
-            <ItemsControl x:Name="ItemsContainer" ItemTemplate="{StaticResource ChartTemplate}">
+            <ItemsControl x:Name="ItemsContainer" Background="White" ItemTemplate="{StaticResource ChartTemplate}">
                 <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate>
                         <StackPanel Spacing="10"></StackPanel>
@@ -74,8 +74,8 @@
                 </ItemsControl.ItemsPanel>
             </ItemsControl>
         </ScrollViewer>
+
+        <controls:InAppNotification Grid.RowSpan="2" x:Name="Notification"></controls:InAppNotification>
         
-
-
     </Grid>
 </Page>

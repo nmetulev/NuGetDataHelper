@@ -8,14 +8,19 @@ using System.Net.Http;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using Windows.ApplicationModel.DataTransfer;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
+using Windows.Graphics.Display;
+using Windows.Graphics.Imaging;
+using Windows.Storage.Streams;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
+using Windows.UI.Xaml.Media.Imaging;
 using Windows.UI.Xaml.Navigation;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409
@@ -177,8 +182,35 @@ Microsoft.Toolkit.Uwp.Connectivity";
 
         private async void Print(object sender, RoutedEventArgs e)
         {
-            var printer = new PrintHelper(ItemsContainer.ItemsPanelRoot);
-            await printer.ShowPrintUIAsync("print data", true);
+            var button = sender as Button;
+            button.IsEnabled = false;
+
+            RenderTargetBitmap rtb = new RenderTargetBitmap();
+            await rtb.RenderAsync(ItemsContainer);
+
+            DataPackage package = new DataPackage();
+            package.RequestedOperation = DataPackageOperation.Copy;
+
+            var pixels = await rtb.GetPixelsAsync();
+            var stream = new InMemoryRandomAccessStream();
+
+            var logicalDpi = DisplayInformation.GetForCurrentView().LogicalDpi;
+            var encoder = await BitmapEncoder.CreateAsync(BitmapEncoder.BmpEncoderId, stream);
+            encoder.SetPixelData(
+                BitmapPixelFormat.Bgra8,
+                BitmapAlphaMode.Ignore,
+                (uint)rtb.PixelWidth,
+                (uint)rtb.PixelHeight,
+                logicalDpi,
+                logicalDpi,
+                pixels.ToArray());
+
+            await encoder.FlushAsync();
+            package.SetBitmap(RandomAccessStreamReference.CreateFromStream(stream));
+
+            Clipboard.SetContent(package);
+            button.IsEnabled = true;
+            Notification.Show("Image copied to clipboard", 3000);
         }
     }
 
