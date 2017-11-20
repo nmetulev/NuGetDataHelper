@@ -11,7 +11,7 @@
 
     <Page.Resources>
         <DataTemplate x:Key="ChartTemplate" x:DataType="local:PackageData">
-            <controls:Expander IsExpanded="True" Header="{x:Bind Name}">
+            <controls:Expander IsExpanded="True" Header="{x:Bind Name}" Background="White">
                 <Grid Height="500" Padding="20">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"></ColumnDefinition>
@@ -58,11 +58,21 @@
         <StackPanel>
             <TextBlock Margin="10, 30, 10, 20" Text="Downloads for select packages in the last 6 weeks"></TextBlock>
             <TextBox Margin="10" x:Name="PackageTextBox" Height="200" TextWrapping="Wrap" AcceptsReturn="True" ></TextBox>
-            <Button Click="Button_Click" Margin="10">Get Data</Button>
+
+            <StackPanel Spacing="20" Orientation="Horizontal" Margin="20">
+                <Button Click="Button_Click" >Get Data</Button>
+                <Button Click="Print" >Print</Button>
+            </StackPanel>
         </StackPanel>
 
         <ScrollViewer Grid.Row="1">
-            <ItemsControl x:Name="ItemsContainer" ItemTemplate="{StaticResource ChartTemplate}"></ItemsControl>
+            <ItemsControl x:Name="ItemsContainer" ItemTemplate="{StaticResource ChartTemplate}">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <StackPanel Spacing="10"></StackPanel>
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+            </ItemsControl>
         </ScrollViewer>
         
 

@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using Microsoft.Toolkit.Uwp.Helpers;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -172,6 +173,12 @@ Microsoft.Toolkit.Uwp.Connectivity";
 
             ItemsContainer.ItemsSource = items;
             button.IsEnabled = true;
+        }
+
+        private async void Print(object sender, RoutedEventArgs e)
+        {
+            var printer = new PrintHelper(ItemsContainer.ItemsPanelRoot);
+            await printer.ShowPrintUIAsync("print data", true);
         }
     }
 
